@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native";
 import Voice from "@react-native-voice/voice";
-import "./global.css";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useTheme } from "./hooks/UseTheme";
 
 export default function Speech() {
   const [isRecording, setIsRecording] = useState(false);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     // Event Listeners'ları ayarla
@@ -58,46 +60,12 @@ export default function Speech() {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={isRecording ? stopRecording : startRecording}
-      >
-        <Text style={styles.buttonText}>
-          {isRecording ? "Kaydı Durdur" : "Kayda Başla"}
-        </Text>
-      </TouchableOpacity>
-
-      <Text style={styles.text}>Söylenen: {text}</Text>
-      {error ? <Text style={styles.errorText}>Hata: {error}</Text> : null}
-    </View>
+    <TouchableOpacity onPress={isRecording ? stopRecording : startRecording}>
+      <MaterialCommunityIcons
+        name="microphone"
+        size={26}
+        color={isRecording ? "green" : isDarkMode ? "white" : "black"}
+      />
+    </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  button: {
-    backgroundColor: "#1e90ff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-  },
-  text: {
-    fontSize: 16,
-    marginTop: 10,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 10,
-  },
-});
