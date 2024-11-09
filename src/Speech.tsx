@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import Voice from "@react-native-voice/voice";
+import Voice, { SpeechResultsEvent } from "@react-native-voice/voice";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "./hooks/UseTheme";
+import { Text } from "react-native-paper";
 
-export default function Speech() {
-  const [isRecording, setIsRecording] = useState(false);
+export default function Speech({ onTextReceived }: { onTextReceived: any }) {
+  const [isListening, setIsListening] = useState(false);
+  const recognizedTextRef = useRef<string>("");
   const [text, setText] = useState("");
   const [error, setError] = useState("");
   const { isDarkMode } = useTheme();
@@ -23,13 +25,22 @@ export default function Speech() {
     };
   }, []);
 
+  const speechResultsHandler = (e: SpeechResultsEvent) => {
+    if (e.value && e.value[0]) {
+      const text = e.value[0];
+      recognizedTextRef.current = text;
+      onTextReceived?.(text);
+    }
+  };
+
   const onSpeechStart = () => {
     console.log("Speech started");
   };
 
   const onSpeechEnd = () => {
-    setIsRecording(false);
+    setIsListening(false);
     console.log("Speech ended");
+    console.log(text);
   };
 
   const onSpeechResults = (e: any) => {
@@ -43,7 +54,7 @@ export default function Speech() {
   const startRecording = async () => {
     try {
       await Voice.start("tr-TR"); // Türkçe için
-      setIsRecording(true);
+      setIsListening(true);
       setError("");
     } catch (e) {
       console.error(e);
@@ -53,19 +64,21 @@ export default function Speech() {
   const stopRecording = async () => {
     try {
       await Voice.stop();
-      setIsRecording(false);
+      setIsListening(false);
     } catch (e) {
       console.error(e);
     }
   };
-
   return (
-    <TouchableOpacity onPress={isRecording ? stopRecording : startRecording}>
-      <MaterialCommunityIcons
-        name="microphone"
-        size={26}
-        color={isRecording ? "green" : isDarkMode ? "white" : "black"}
-      />
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity onPress={isListening ? stopRecording : startRecording}>
+        <MaterialCommunityIcons
+          name="microphone"
+          size={26}
+          color={isListening ? "green" : isDarkMode ? "white" : "black"}
+        />
+      </TouchableOpacity>
+      {text && <Text>Recognized Text: {text}</Text>}
+    </>
   );
 }
