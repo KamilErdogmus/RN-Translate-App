@@ -28,15 +28,23 @@ const SwapButton = ({ onSwap }: { onSwap: () => void }) => {
       activeOpacity={0.8}
       onPress={handlePress}
       style={[
-        styles.swapBTN,
+        styles.comicButton,
+        isPressed && styles.comicButtonPressed,
         {
-          borderColor: paperTheme.colors.text,
+          borderColor: paperTheme.colors.primary,
           backgroundColor: swapButtonColor,
           color: paperTheme.colors.onSecondary,
         },
       ]}
     >
-      <Text style={{ color: paperTheme.colors.text }} variant="headlineMedium">
+      <Text
+        style={[
+          styles.comicButtonText,
+          isPressed && styles.comicButtonPressedText,
+          { color: paperTheme.colors.text },
+        ]}
+        variant="headlineMedium"
+      >
         SWAP
       </Text>
     </TouchableOpacity>
@@ -46,11 +54,38 @@ const SwapButton = ({ onSwap }: { onSwap: () => void }) => {
 export default SwapButton;
 
 const styles = StyleSheet.create({
-  swapBTN: {
+  comicButton: {
+    padding: 5,
+    paddingHorizontal: 10,
     alignItems: "center",
-    padding: 2,
-    margin: 8,
-    marginVertical: 20,
-    borderWidth: 1,
+    justifyContent: "center",
+    backgroundColor: "#ff5252",
+    borderWidth: 2,
+    borderColor: "#000",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 5,
+      height: 5,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 1,
+  },
+  comicButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+  },
+
+  comicButtonPressed: {
+    backgroundColor: "#fff",
+    borderColor: "#ff5252",
+    shadowColor: "#ff5252",
+    transform: [{ translateY: 4 }],
+  },
+  comicButtonPressedText: {
+    color: "#ff5252",
   },
 });

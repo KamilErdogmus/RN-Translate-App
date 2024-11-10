@@ -22,6 +22,8 @@ interface TranslationState {
 }
 
 const HomeScreen = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const setLanguages = useSetRecoilState(languagesAtom);
   const setLibrary = useSetRecoilState(libraryAtom);
   const paperTheme = usePaperTheme();
@@ -32,7 +34,6 @@ const HomeScreen = () => {
     targetLanguage: "",
     translatedText: "",
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { inputText, sourceLanguage, targetLanguage, translatedText } =
     translationState;
@@ -46,6 +47,22 @@ const HomeScreen = () => {
       inputText: prev.translatedText,
       translatedText: prev.inputText,
     }));
+  }, []);
+  const handleReset = useCallback(() => {
+    setTranslationState((prev) => ({
+      ...prev,
+      sourceLanguage: "",
+      targetLanguage: "",
+      inputText: "",
+      translatedText: "",
+    }));
+
+    Toast.show({
+      type: "success",
+      text1: "Reset",
+      text2: "All fields have been cleared",
+      position: "bottom",
+    });
   }, []);
 
   useEffect(() => {
@@ -145,7 +162,7 @@ const HomeScreen = () => {
       }
     >
       <Header />
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 4 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 8 }}>
         <InputArea
           mic
           onChangeText={handleInputChange}
@@ -154,13 +171,22 @@ const HomeScreen = () => {
           selectedLanguage={sourceLanguage}
           onLanguageSelect={handleSourceLanguageSelect}
         />
-        <View style={{ flex: 1, justifyContent: "space-around" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginVertical: 20,
+            flex: 1,
+          }}
+        >
           <SwapButton onSwap={handleSwap} />
-          <ResetButton />
+          <ResetButton handleReset={handleReset} />
         </View>
 
         <InputArea
           bookmark
+          isLoading
           disabled
           handleAdd={addLibrary}
           onLanguageSelect={handleTargetLanguageSelect}

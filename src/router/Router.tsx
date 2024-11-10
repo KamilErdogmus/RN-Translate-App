@@ -13,6 +13,7 @@ const Router = () => {
   const paperTheme = usePaperTheme();
   return (
     <Tab.Navigator
+      shifting
       initialRouteName="Home"
       activeColor={paperTheme.colors.primary}
       inactiveColor={paperTheme.colors.outline}

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Divider,
   TextInput,
   useTheme as usePaperTheme,
@@ -13,7 +14,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { languagesAtom } from "../atoms/languagesAtom";
 import STT from "./STT";
 import { useRecoilValue } from "recoil";
-import Toast from "react-native-toast-message";
 import TTS from "./TTS";
 import CopyButton from "./CopyButton";
 
@@ -29,6 +29,7 @@ interface IProps {
   handleAdd?: () => void;
   onLanguageSelect?: (language: string) => void;
   selectedLanguage: string;
+  isLoading?: boolean;
 }
 
 const InputArea = ({
@@ -37,6 +38,7 @@ const InputArea = ({
   onLanguageSelect,
   handleAdd,
   disabled,
+  isLoading,
   onSpeechResult,
   translatedText,
   onChangeText,
@@ -179,6 +181,17 @@ const InputArea = ({
         ]}
       >
         <Divider bold />
+
+        {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={paperTheme.colors.primary} />
+            <Text
+              style={[styles.loadingText, { color: paperTheme.colors.text }]}
+            >
+              Translating...
+            </Text>
+          </View>
+        )}
         <TextInput
           multiline
           textColor={disabled ? "#000" : isDarkMode ? "#FFFFFF" : "#000000"}
@@ -189,9 +202,10 @@ const InputArea = ({
                 : "lightgray"
               : "transparent",
             fontSize: 20,
+            opacity: isLoading ? 0.5 : 1,
           }}
           placeholderTextColor={paperTheme.colors.onSurface}
-          disabled={disabled}
+          disabled={disabled || isLoading}
           numberOfLines={10}
           value={translatedText || text}
           onChangeText={handleTextChange}
@@ -300,5 +314,22 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
     paddingHorizontal: 8,
+  },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+    borderRadius: 6,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
