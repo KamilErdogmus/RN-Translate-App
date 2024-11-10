@@ -8,6 +8,7 @@ import "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { useTheme } from "./src/hooks/UseTheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LogBox } from "react-native";
 
 const AppContent = () => {
   const { getCurrentTheme, isDarkMode } = useTheme();
@@ -31,3 +32,8 @@ const App = () => (
 );
 
 export default App;
+
+LogBox.ignoreLogs([
+  "`new NativeEventEmitter()`",
+  "Warning: `new NativeEventEmitter()`",
+]);
