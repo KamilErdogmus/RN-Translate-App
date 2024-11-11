@@ -1,6 +1,21 @@
 import { atom } from "recoil";
 
-export const libraryAtom = atom({
-  key: "languagesAtom",
-  default: [],
+export interface LibraryEntry {
+  id: string | number[];
+  inputText: string;
+  translatedText: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  created_at: string;
+}
+
+export interface LibraryState {
+  entries: LibraryEntry[];
+}
+
+export const libraryAtom = atom<LibraryState>({
+  key: "library_atom",
+  default: {
+    entries: [],
+  },
 });

@@ -13,6 +13,7 @@ import ResetButton from "../components/ResetButton";
 import Toast from "react-native-toast-message";
 import { libraryAtom } from "../atoms/libraryAtom";
 import uuid from "react-native-uuid";
+import { saveLibraryToStorage } from "../utils/asyncStorage";
 
 interface TranslationState {
   inputText: string;
@@ -22,7 +23,8 @@ interface TranslationState {
 }
 
 const HomeScreen = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isTranslating, setIsTranslating] = useState<boolean>(false);
+  const [isInitializing, setIsInitializing] = useState<boolean>(false);
 
   const setLanguages = useSetRecoilState(languagesAtom);
   const setLibrary = useSetRecoilState(libraryAtom);
@@ -73,7 +75,7 @@ const HomeScreen = () => {
         targetLanguage !== ""
       ) {
         try {
-          setIsLoading(true);
+          setIsTranslating(true);
           const result = await translateQuery(
             debouncedInputText,
             sourceLanguage,
@@ -83,7 +85,7 @@ const HomeScreen = () => {
         } catch (error) {
           console.error("Translation failed:", error);
         } finally {
-          setIsLoading(false);
+          setIsTranslating(false);
         }
       }
     };
@@ -94,13 +96,13 @@ const HomeScreen = () => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        setIsLoading(true);
+        setIsInitializing(true);
         const data = await getLanguages();
         setLanguages(data);
       } catch (error) {
         console.error("Initialization error:", error);
       } finally {
-        setIsLoading(false);
+        setIsInitializing(false);
       }
     };
 
@@ -123,7 +125,14 @@ const HomeScreen = () => {
         created_at: new Date().toISOString(),
       };
 
-      setLibrary((prev) => ({ ...prev, ...newEntry }));
+      setLibrary((prev) => {
+        const newState = {
+          entries: [...prev.entries, newEntry],
+        };
+        saveLibraryToStorage(newState);
+        return newState;
+      });
+
       Toast.show({
         type: "success",
         text1: "Added",
@@ -168,6 +177,7 @@ const HomeScreen = () => {
           onChangeText={handleInputChange}
           onSpeechResult={handleInputChange}
           text={inputText}
+          isLoading={isInitializing}
           selectedLanguage={sourceLanguage}
           onLanguageSelect={handleSourceLanguageSelect}
         />
@@ -186,7 +196,7 @@ const HomeScreen = () => {
 
         <InputArea
           bookmark
-          isLoading
+          isLoading={isTranslating}
           disabled
           handleAdd={addLibrary}
           onLanguageSelect={handleTargetLanguageSelect}

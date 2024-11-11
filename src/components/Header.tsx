@@ -17,7 +17,7 @@ const Header = () => {
         justifyContent: "space-between",
       }}
     >
-      <Text variant="headlineMedium">TRANSLATE-X</Text>
+      <Text variant="headlineMedium">TRANSLATER</Text>
       <Pressable
         onPress={themeHandler}
         style={{ marginVertical: 6, alignItems: "flex-end" }}

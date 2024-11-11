@@ -9,9 +9,12 @@ import Toast from "react-native-toast-message";
 import { useTheme } from "./src/hooks/UseTheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LogBox } from "react-native";
+import { useInitializeLibrary } from "./src/hooks/useInıtializeLibrary";
 
 const AppContent = () => {
   const { getCurrentTheme, isDarkMode } = useTheme();
+  const isLoading = useInitializeLibrary();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
