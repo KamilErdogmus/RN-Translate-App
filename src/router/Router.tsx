@@ -23,6 +23,10 @@ const Router = () => {
           : paperTheme.colors.background,
       }}
       theme={paperTheme}
+      screenOptions={{
+        unmountOnBlur: true,
+        lazy: true,
+      }}
     >
       <Tab.Screen
         name="Home"
@@ -35,7 +39,7 @@ const Router = () => {
         }}
       />
       <Tab.Screen
-        name="Library"
+        name="Docs"
         component={DocsScreen}
         options={{
           tabBarLabel: "Library",

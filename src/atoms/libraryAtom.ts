@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 export interface LibraryEntry {
-  id: string | number[];
+  id: string;
   inputText: string;
   translatedText: string;
   sourceLanguage: string;

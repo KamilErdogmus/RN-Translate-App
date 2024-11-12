@@ -1,4 +1,3 @@
-// Speech.tsx
 import * as Speech from "expo-speech";
 import { TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
