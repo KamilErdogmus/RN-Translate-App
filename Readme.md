@@ -39,7 +39,7 @@ These libraries collectively empower the Translator App to offer a responsive, f
 
 ## API
 
-![Translate-API](https://rapidapi.com/gatzuma/api/deep-translate1)
+[Translate-API](https://rapidapi.com/gatzuma/api/deep-translate1)
 
 ## Installation
 
