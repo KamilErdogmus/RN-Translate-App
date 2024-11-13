@@ -14,7 +14,7 @@ export const useInitializeLibrary = () => {
         const savedLibrary = await loadLibraryFromStorage();
         setLibrary(savedLibrary);
       } catch (error) {
-        console.error("Error initializing library:", error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }

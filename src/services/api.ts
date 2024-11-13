@@ -1,9 +1,10 @@
 import axios from "axios";
+import { RAPID_API_KEY } from "@env";
 
 const api = axios.create({
   baseURL: "https://deep-translate1.p.rapidapi.com/",
   headers: {
-    "x-rapidapi-key": "62daa3f4d8msh4434cd1c8d199dep18ef4cjsn7c0a81d180ca",
+    "x-rapidapi-key": RAPID_API_KEY,
     "x-rapidapi-host": "deep-translate1.p.rapidapi.com",
     "Content-Type": "application/json",
   },

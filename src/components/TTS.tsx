@@ -9,9 +9,10 @@ import Toast from "react-native-toast-message";
 interface SpeechProps {
   text: string;
   language: string;
+  size?: number;
 }
 
-const TTS: React.FC<SpeechProps> = ({ text, language }) => {
+const TTS: React.FC<SpeechProps> = ({ text, language, size = 26 }) => {
   const { isDarkMode } = useTheme();
   const paperTheme = usePaperTheme();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -71,7 +72,7 @@ const TTS: React.FC<SpeechProps> = ({ text, language }) => {
     <TouchableOpacity onPress={speak}>
       <MaterialCommunityIcons
         name="volume-high"
-        size={26}
+        size={size}
         color={
           isDarkMode ? paperTheme.colors.primary : paperTheme.colors.onSurface
         }

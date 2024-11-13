@@ -83,7 +83,7 @@ const HomeScreen = () => {
           );
           setTranslationState((prev) => ({ ...prev, translatedText: result }));
         } catch (error) {
-          console.error("Translation failed:", error);
+          console.error(error);
         } finally {
           setIsTranslating(false);
         }
@@ -100,7 +100,7 @@ const HomeScreen = () => {
         const data = await getLanguages();
         setLanguages(data);
       } catch (error) {
-        console.error("Initialization error:", error);
+        console.error(error);
       } finally {
         setIsInitializing(false);
       }

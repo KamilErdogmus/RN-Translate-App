@@ -9,11 +9,13 @@ import { useTheme as usePaperTheme } from "react-native-paper";
 const Tab = createMaterialBottomTabNavigator();
 
 const Router = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode } = useTheme();
   const paperTheme = usePaperTheme();
+
   return (
     <Tab.Navigator
       shifting
+      sceneAnimationEnabled
       initialRouteName="Home"
       activeColor={paperTheme.colors.primary}
       inactiveColor={paperTheme.colors.outline}
@@ -32,7 +34,7 @@ const Router = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Ana Sayfa",
+          tabBarLabel: "Home",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="home" color={color} size={26} />
           ),

@@ -4,21 +4,22 @@ import {
   Text,
   TouchableWithoutFeedback,
   StyleSheet,
+  TouchableOpacity,
   Pressable,
   Animated,
   Modal,
   Easing,
 } from "react-native";
 import { LibraryEntry } from "../atoms/libraryAtom";
-import { useTheme as usePaperTheme } from "react-native-paper";
+import { Divider, useTheme as usePaperTheme } from "react-native-paper";
 import { useTheme } from "../hooks/UseTheme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useSetRecoilState } from "recoil";
 import { libraryAtom } from "../atoms/libraryAtom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import TTS from "./TTS";
 
 const LibraryCard = ({
   item,
@@ -32,12 +33,22 @@ const LibraryCard = ({
 
   const [isOpened, setIsOpened] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [cardWidth, setCardWidth] = useState<number>(0);
+  const cardRef = useRef<View>(null);
 
   const setLibrary = useSetRecoilState(libraryAtom);
 
+  useEffect(() => {
+    if (cardRef.current) {
+      cardRef.current.measure((x, y, width) => {
+        setCardWidth(width);
+      });
+    }
+  }, []);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(50)).current;
-  const deleteButtonSlide = useRef(new Animated.Value(50)).current;
+  const deleteButtonSlide = useRef(new Animated.Value(cardWidth)).current;
 
   const startAnimation = () => {
     fadeAnim.setValue(0);
@@ -73,70 +84,59 @@ const LibraryCard = ({
 
   useEffect(() => {
     if (isOpened) {
-      Animated.sequence([
-        Animated.spring(deleteButtonSlide, {
-          toValue: 0,
-          useNativeDriver: true,
-          friction: 8,
-          tension: 40,
-        }),
-      ]).start();
-    } else {
-      Animated.timing(deleteButtonSlide, {
-        toValue: 50,
-        duration: 200,
-        easing: Easing.ease,
+      Animated.spring(deleteButtonSlide, {
+        toValue: cardWidth - 10,
         useNativeDriver: true,
+        friction: 8,
+        tension: 40,
+      }).start();
+    } else {
+      Animated.spring(deleteButtonSlide, {
+        toValue: cardWidth,
+        useNativeDriver: true,
+        friction: 8,
+        tension: 40,
       }).start();
     }
-  }, [isOpened]);
+  }, [isOpened, cardWidth]);
 
-  const handleDelete = () => {
-    setModalVisible(true);
-  };
   const handleCloseModal = () => {
     setModalVisible(false);
     setTimeout(() => {
       setIsOpened(false);
     }, 300);
   };
-
   const confirmDelete = async () => {
     try {
-      const savedData = await AsyncStorage.getItem("translator_library");
-      console.log("Current data:", savedData);
+      const currentData = await AsyncStorage.getItem("translator_library");
+      if (!currentData) return;
 
-      if (savedData) {
-        const currentData = JSON.parse(savedData);
+      const parsedData = JSON.parse(currentData);
+      const filteredEntries = parsedData.entries.filter(
+        (entry: LibraryEntry) => entry.id !== item.id
+      );
 
-        const newEntries = currentData.entries.filter(
-          (entry: LibraryEntry) => entry.id !== item.id
-        );
+      const newState = { entries: filteredEntries };
+      await AsyncStorage.setItem(
+        "translator_library",
+        JSON.stringify(newState)
+      );
+      setLibrary(newState);
 
-        const newState = { entries: newEntries };
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Item deleted",
+        position: "bottom",
+      });
 
-        await AsyncStorage.setItem(
-          "translator_library",
-          JSON.stringify(newState)
-        );
-
-        setLibrary(newState);
-
-        handleCloseModal();
-
-        Toast.show({
-          type: "success",
-          text1: "Deleted",
-          text2: "Translation deleted successfully",
-          position: "bottom",
-        });
-      }
+      setModalVisible(false);
+      setIsOpened(false);
     } catch (error) {
-      console.error("Delete error:", error);
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Could not delete translation",
+        text2: "Delete failed",
         position: "bottom",
       });
     }
@@ -145,6 +145,7 @@ const LibraryCard = ({
   return (
     <>
       <Animated.View
+        ref={cardRef}
         style={[
           styles.card,
           {
@@ -153,7 +154,7 @@ const LibraryCard = ({
             backgroundColor: isDarkMode
               ? paperTheme.colors.surface
               : paperTheme.colors.background,
-            borderColor: paperTheme.colors.outline,
+            borderColor: isOpened ? "red" : paperTheme.colors.outline,
           },
         ]}
       >
@@ -162,13 +163,24 @@ const LibraryCard = ({
           style={{ flex: 1 }}
         >
           <View style={styles.textContainer}>
-            <Text style={[styles.label, { color: paperTheme.colors.primary }]}>
-              Original Text:
-            </Text>
+            <View style={styles.speech}>
+              <Text
+                style={[styles.label, { color: paperTheme.colors.primary }]}
+              >
+                Original Text:
+              </Text>
+              <TTS
+                text={item.inputText}
+                language={item.sourceLanguage}
+                size={20}
+              />
+            </View>
             <Text style={[styles.text, { color: paperTheme.colors.text }]}>
               {item.inputText}
             </Text>
           </View>
+
+          <Divider bold />
 
           <View
             style={[
@@ -176,9 +188,18 @@ const LibraryCard = ({
               { borderColor: isOpened ? "red" : paperTheme.colors.outline },
             ]}
           >
-            <Text style={[styles.label, { color: paperTheme.colors.primary }]}>
-              Translated Text:
-            </Text>
+            <View style={styles.speech}>
+              <Text
+                style={[styles.label, { color: paperTheme.colors.primary }]}
+              >
+                Translated Text:
+              </Text>
+              <TTS
+                text={item.translatedText}
+                language={item.targetLanguage}
+                size={20}
+              />
+            </View>
             <Text style={[styles.text, { color: paperTheme.colors.text }]}>
               {item.translatedText}
             </Text>
@@ -188,13 +209,13 @@ const LibraryCard = ({
             <Text
               style={[styles.smallText, { color: paperTheme.colors.secondary }]}
             >
-              From: {item.sourceLanguage.toUpperCase()}
+              From: {item.sourceLanguage.toUpperCase()} &nbsp;
               <AntDesign
                 name="arrowright"
                 color={paperTheme.colors.secondary}
                 size={16}
               />
-              To: {item.targetLanguage.toUpperCase()}
+              &nbsp; To: {item.targetLanguage.toUpperCase()}
             </Text>
             <Text
               style={[styles.smallText, { color: paperTheme.colors.secondary }]}
@@ -202,24 +223,25 @@ const LibraryCard = ({
               {new Date(item.created_at).toLocaleDateString()}
             </Text>
           </View>
-          {isOpened && (
-            <Animated.View
-              style={[
-                styles.deleteBtn,
-                {
-                  transform: [{ translateX: deleteButtonSlide }],
-                  opacity: deleteButtonSlide.interpolate({
-                    inputRange: [0, 50],
-                    outputRange: [1, 0],
-                  }),
-                },
-              ]}
+          <Animated.View
+            style={[
+              styles.deleteBtn,
+              {
+                transform: [{ translateX: deleteButtonSlide }],
+                opacity: deleteButtonSlide.interpolate({
+                  inputRange: [cardWidth - 10, cardWidth],
+                  outputRange: [1, 0],
+                }),
+              },
+            ]}
+          >
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={{ padding: 5 }}
             >
-              <TouchableWithoutFeedback onPress={handleDelete}>
-                <Ionicons name="trash-bin" size={20} color={"white"} />
-              </TouchableWithoutFeedback>
-            </Animated.View>
-          )}
+              <Ionicons name="trash-bin" size={20} color="white" />
+            </TouchableOpacity>
+          </Animated.View>
         </Pressable>
       </Animated.View>
 
@@ -263,13 +285,17 @@ const LibraryCard = ({
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
                     style={[styles.modalButton, styles.cancelButton]}
-                    onPress={handleCloseModal}
+                    onPress={() => {
+                      handleCloseModal();
+                    }}
                   >
                     <Text style={styles.buttonText}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.modalButton, styles.deleteButton]}
-                    onPress={confirmDelete}
+                    onPress={() => {
+                      confirmDelete();
+                    }}
                   >
                     <Text style={[styles.buttonText, { color: "white" }]}>
                       Delete
@@ -294,7 +320,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   textContainer: {
-    marginBottom: 12,
+    marginVertical: 12,
   },
   label: {
     fontSize: 14,
@@ -315,7 +341,7 @@ const styles = StyleSheet.create({
     borderTopColor: "#eee",
   },
   smallText: {
-    fontSize: 13,
+    fontSize: 14.2,
   },
   deleteBtn: {
     position: "absolute",
@@ -371,6 +397,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: "500",
+  },
+  speech: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 

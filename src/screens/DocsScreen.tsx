@@ -11,7 +11,6 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { debugStorage } from "../utils/asyncStorage";
 
 const DocsScreen = () => {
   const [refreshKey, setRefreshKey] = useState<number>(0);
@@ -33,12 +32,11 @@ const DocsScreen = () => {
           const savedData = await AsyncStorage.getItem("translator_library");
           if (savedData) {
             const parsedData = JSON.parse(savedData);
-            console.log("Refreshing library with data:", parsedData);
             setLibrary(parsedData);
             refreshList();
           }
         } catch (error) {
-          console.error("Error refreshing library:", error);
+          console.error(error);
         }
       };
 

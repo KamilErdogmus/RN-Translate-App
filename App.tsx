@@ -10,6 +10,7 @@ import { useTheme } from "./src/hooks/UseTheme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LogBox } from "react-native";
 import { useInitializeLibrary } from "./src/hooks/useInıtializeLibrary";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AppContent = () => {
   const { getCurrentTheme, isDarkMode } = useTheme();
