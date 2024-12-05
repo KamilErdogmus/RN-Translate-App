@@ -48,7 +48,7 @@ To run the project locally follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/KamilErdogmus/RN-TaskAPP
+git clone https://github.com/KamilErdogmus/RN-Translate-App
 ```
 
 2. Navigate to the project directory:
