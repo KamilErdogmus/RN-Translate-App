@@ -19,7 +19,7 @@ const DocsScreen = () => {
   const libraryData = useRecoilValue(libraryAtom);
   const setLibrary = useSetRecoilState(libraryAtom);
   const paperTheme = usePaperTheme();
-  const flatListRef = React.useRef(null);
+  const flatListRef = React.useRef<FlatList>(null);
 
   const refreshList = useCallback(() => {
     setRefreshKey((prev) => prev + 1);
@@ -49,11 +49,11 @@ const DocsScreen = () => {
   );
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("tabPress", (e) => {
+    const unsubscribe = navigation.addListener("tabPress" as any, (e: any) => {
       if (route.name === "Docs") {
         e.preventDefault();
         setRefreshKey((prev) => prev + 1);
-        navigation.navigate("Docs");
+        navigation.navigate("Docs" as never);
       }
     });
 
@@ -61,7 +61,7 @@ const DocsScreen = () => {
   }, [navigation, route]);
 
   const renderItem = React.useCallback(
-    ({ item, index }) => (
+    ({ item, index }: { item: any; index: number }) => (
       <LibraryCard item={item} index={index} key={`${item.id}-${refreshKey}`} />
     ),
     [refreshKey]
@@ -74,7 +74,7 @@ const DocsScreen = () => {
           ref={flatListRef}
           key={refreshKey}
           data={libraryData.entries}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => `${item.id}-${refreshKey}`}
           contentContainerStyle={styles.listContainer}
           removeClippedSubviews={false}
           showsVerticalScrollIndicator={false}
@@ -84,12 +84,10 @@ const DocsScreen = () => {
           onScrollToIndexFailed={() => {}}
           extraData={refreshKey}
           renderItem={renderItem}
-          keyExtractor={(item) => `${item.id}-${refreshKey}`}
-          contentContainerStyle={styles.listContainer}
         />
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={[styles.emptyText, { color: paperTheme.colors.text }]}>
+          <Text style={[styles.emptyText, { color: paperTheme.colors.onSurface }]}>
             No saved translations yet
           </Text>
         </View>

@@ -175,7 +175,7 @@ const LibraryCard = ({
                 size={20}
               />
             </View>
-            <Text style={[styles.text, { color: paperTheme.colors.text }]}>
+            <Text style={[styles.text, { color: paperTheme.colors.onSurface }]}>
               {item.inputText}
             </Text>
           </View>
@@ -200,7 +200,7 @@ const LibraryCard = ({
                 size={20}
               />
             </View>
-            <Text style={[styles.text, { color: paperTheme.colors.text }]}>
+            <Text style={[styles.text, { color: paperTheme.colors.onSurface }]}>
               {item.translatedText}
             </Text>
           </View>
@@ -211,7 +211,7 @@ const LibraryCard = ({
             >
               From: {item.sourceLanguage.toUpperCase()} &nbsp;
               <AntDesign
-                name="arrowright"
+                name="right"
                 color={paperTheme.colors.secondary}
                 size={16}
               />
@@ -273,12 +273,12 @@ const LibraryCard = ({
                 ]}
               >
                 <Text
-                  style={[styles.modalTitle, { color: paperTheme.colors.text }]}
+                  style={[styles.modalTitle, { color: paperTheme.colors.onSurface }]}
                 >
                   Delete Translation
                 </Text>
                 <Text
-                  style={[styles.modalText, { color: paperTheme.colors.text }]}
+                  style={[styles.modalText, { color: paperTheme.colors.onSurface }]}
                 >
                   Are you sure you want to delete this translation?
                 </Text>

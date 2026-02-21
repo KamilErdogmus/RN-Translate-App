@@ -31,7 +31,6 @@ const ResetButton = ({ handleReset }: { handleReset: () => void }) => {
         {
           borderColor: paperTheme.colors.primary,
           backgroundColor: swapButtonColor,
-          color: paperTheme.colors.onSecondary,
         },
       ]}
     >
@@ -40,7 +39,7 @@ const ResetButton = ({ handleReset }: { handleReset: () => void }) => {
           styles.comicButtonText,
           isPressed && styles.comicButtonPressedText,
           {
-            color: paperTheme.colors.text,
+            color: paperTheme.colors.onSurface,
           },
         ]}
         variant="headlineMedium"

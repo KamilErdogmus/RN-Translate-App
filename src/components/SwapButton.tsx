@@ -33,7 +33,6 @@ const SwapButton = ({ onSwap }: { onSwap: () => void }) => {
         {
           borderColor: paperTheme.colors.primary,
           backgroundColor: swapButtonColor,
-          color: paperTheme.colors.onSecondary,
         },
       ]}
     >
@@ -41,7 +40,7 @@ const SwapButton = ({ onSwap }: { onSwap: () => void }) => {
         style={[
           styles.comicButtonText,
           isPressed && styles.comicButtonPressedText,
-          { color: paperTheme.colors.text },
+          { color: paperTheme.colors.onSurface },
         ]}
         variant="headlineMedium"
       >

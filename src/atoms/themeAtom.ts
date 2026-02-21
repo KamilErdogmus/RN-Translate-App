@@ -1,11 +1,10 @@
 import { atom } from "recoil";
 import { MD3LightTheme, MD3DarkTheme } from "react-native-paper";
-import uuid from "react-native-uuid";
 
 export type ThemeType = "light" | "dark";
 
 export const themeState = atom<ThemeType>({
-  key: uuid.v4().toString(),
+  key: "theme_state",
   default: "dark",
 });
 

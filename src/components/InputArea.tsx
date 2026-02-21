@@ -97,10 +97,10 @@ const InputArea = ({
               color: isDarkMode
                 ? isSelected
                   ? paperTheme.colors.background
-                  : paperTheme.colors.text
+                  : paperTheme.colors.onSurface
                 : isSelected
                 ? paperTheme.colors.background
-                : paperTheme.colors.text,
+                : paperTheme.colors.onSurface,
             },
           ]}
         >
@@ -136,13 +136,13 @@ const InputArea = ({
         ]}
         selectedTextStyle={[
           styles.selectedTextStyle,
-          { color: paperTheme.colors.text },
+          { color: paperTheme.colors.onSurface },
         ]}
         inputSearchStyle={[
           styles.inputSearchStyle,
           {
             backgroundColor: paperTheme.colors.background,
-            color: paperTheme.colors.text,
+            color: paperTheme.colors.onSurface,
           },
         ]}
         iconStyle={styles.iconStyle}
@@ -186,7 +186,7 @@ const InputArea = ({
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color={paperTheme.colors.primary} />
             <Text
-              style={[styles.loadingText, { color: paperTheme.colors.text }]}
+              style={[styles.loadingText, { color: paperTheme.colors.onSurface }]}
             >
               Translating...
             </Text>
@@ -198,7 +198,7 @@ const InputArea = ({
           style={{
             backgroundColor: disabled
               ? isDarkMode
-                ? paperTheme.colors.disabled
+                ? paperTheme.colors.surfaceDisabled
                 : "lightgray"
               : "transparent",
             fontSize: 20,

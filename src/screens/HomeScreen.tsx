@@ -12,7 +12,7 @@ import SwapButton from "../components/SwapButton";
 import ResetButton from "../components/ResetButton";
 import Toast from "react-native-toast-message";
 import { libraryAtom } from "../atoms/libraryAtom";
-import uuid from "react-native-uuid";
+import * as Crypto from "expo-crypto";
 import { saveLibraryToStorage } from "../utils/asyncStorage";
 
 interface TranslationState {
@@ -117,7 +117,7 @@ const HomeScreen = () => {
       targetLanguage !== ""
     ) {
       const newEntry = {
-        id: uuid.v4(),
+        id: Crypto.randomUUID(),
         inputText,
         translatedText,
         sourceLanguage,

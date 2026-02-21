@@ -25,10 +25,6 @@ const Router = () => {
           : paperTheme.colors.background,
       }}
       theme={paperTheme}
-      screenOptions={{
-        unmountOnBlur: true,
-        lazy: true,
-      }}
     >
       <Tab.Screen
         name="Home"
