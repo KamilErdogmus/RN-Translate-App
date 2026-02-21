@@ -14,7 +14,7 @@
     "@react-native-voice/voice": "^3.2.4",
     "@react-navigation/material-bottom-tabs": "^6.2.29",
     "@react-navigation/native": "^6.1.18",
-    "axios": "^1.7.7",
+    "axios": "^1.13.5",
     "expo": "~51.0.39",
     "expo-clipboard": "~6.0.3",
     "expo-speech": "~12.0.2",
